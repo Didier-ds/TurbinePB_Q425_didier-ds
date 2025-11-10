@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "name": "dogeatdog-nft",
+  "version": "1.0.0",
+  "main": "create-nft.js",
+  "dependencies": {
+    "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
+    "@metaplex-foundation/umi": "^1.4.1",
+    "@metaplex-foundation/umi-bundle-defaults": "^1.4.1",
+    "@metaplex-foundation/umi-uploader-irys": "^1.4.1",
+    "@solana/spl-token": "^0.4.14"
+  }
+}
