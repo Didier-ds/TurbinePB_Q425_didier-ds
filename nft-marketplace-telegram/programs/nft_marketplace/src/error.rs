@@ -6,4 +6,8 @@ pub enum MarketplaceError {
     InvalidNFT,
     #[msg("Invalid owner")]
     InvalidOwner,
+    #[msg("Listing is not active")]
+    ListingNotActive,
+    #[msg("Only the seller can cancel this listing")]
+    UnauthorizedCancel
 }

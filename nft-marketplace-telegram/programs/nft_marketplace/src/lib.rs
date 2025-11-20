@@ -17,4 +17,8 @@ pub mod nft_marketplace {
     pub fn list_nft(ctx: Context<ListNFT>, price_in_sol: u64) -> Result<()> {
         instructions::list_nft::list_nft(ctx, price_in_sol)
     }
+
+    pub fn cancel_listing(ctx: Context<CancelListing>) -> Result<()> {
+        instructions::cancel_listing::cancel_listing(ctx)
+    }
 }
