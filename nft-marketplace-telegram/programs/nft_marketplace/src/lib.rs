@@ -8,7 +8,7 @@ pub use state::*;
 pub use instructions::*;
 pub use error::*;
 
-declare_id!("5rLugYKFCru2oZ47qpwcGgJW42U2XuYXD69qDWh74Fhg");
+declare_id!("67AAvxuwtST6foKb3141DAy4eUGnUFVZYERKEBytu5sc");
 
 #[program]
 pub mod nft_marketplace {
@@ -20,5 +20,9 @@ pub mod nft_marketplace {
 
     pub fn cancel_listing(ctx: Context<CancelListing>) -> Result<()> {
         instructions::cancel_listing::cancel_listing(ctx)
+    }
+
+    pub fn buy_nft(ctx: Context<BuyNFT>) -> Result<()> {
+        instructions::buy_nft::buy_nft(ctx)
     }
 }
