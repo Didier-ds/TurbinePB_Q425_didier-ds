@@ -3,9 +3,10 @@ import { Program, AnchorProvider, Wallet, BN, Idl } from '@coral-xyz/anchor';
 import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from '@solana/spl-token';
 
 // Load IDL
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const idl = require('../../../target/idl/nft_marketplace.json');
+import idl from '../../../target/idl/nft_marketplace.json';
+import NftMarketplace from "../../../target/types/nft_marketplace"
 
+export type MyProgram = typeof idl;
 const PROGRAM_ID = new PublicKey(process.env.NFT_MARKETPLACE_PROGRAM_ID || '67AAvxuwtST6foKb3141DAy4eUGnUFVZYERKEBytu5sc');
 
 const connection = new Connection(
@@ -20,14 +21,14 @@ function getKeypair(secretKeyBase64: string): Keypair {
 }
 
 // Get program instance with wallet
-function getProgram(wallet: { publicKey: string; secretKey: string }): Program {
+function getProgram(wallet: { publicKey: string; secretKey: string }) {
   const keypair = getKeypair(wallet.secretKey);
   const anchorWallet = new Wallet(keypair);
   const provider = new AnchorProvider(connection, anchorWallet, {
     commitment: 'confirmed',
   });
 
-  return new Program(idl as Idl, provider);
+  return new Program(idl as NftMarketplace, provider);
 }
 
 // Derive listing PDA
@@ -70,7 +71,7 @@ export async function listNft(
   const priceInLamports = new BN(priceInSol * LAMPORTS_PER_SOL);
 
   // Call the smart contract
-  const txHash = await (program.methods as any)
+  const txHash = await (program.methods)
     .listNft(priceInLamports)
     .accounts({
       seller: seller,
