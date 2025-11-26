@@ -1,10 +1,10 @@
-import { Connection, PublicKey, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { Connection, PublicKey, Keypair, LAMPORTS_PER_SOL, SystemProgram } from '@solana/web3.js';
 import { Program, AnchorProvider, Wallet, BN, Idl } from '@coral-xyz/anchor';
-import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress } from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID, getAssociatedTokenAddress, getOrCreateAssociatedTokenAccount } from '@solana/spl-token';
 
 // Load IDL
 import idl from '../../../target/idl/nft_marketplace.json';
-import NftMarketplace from "../../../target/types/nft_marketplace"
+import {NftMarketplace} from "../../../target/types/nft_marketplace"
 
 export type MyProgram = typeof idl;
 const PROGRAM_ID = new PublicKey(process.env.NFT_MARKETPLACE_PROGRAM_ID || '67AAvxuwtST6foKb3141DAy4eUGnUFVZYERKEBytu5sc');
@@ -77,10 +77,6 @@ export async function listNft(
       seller: seller,
       nftMint: nftMintPubkey,
       sellerTokenAccount: sellerTokenAccount,
-      listing: listing,
-      escrowTokenAccount: escrowTokenAccount,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      systemProgram: PublicKey.default,
     })
     .rpc();
 
@@ -104,8 +100,15 @@ export async function buyNft(
   const seller = listingAccount.seller as PublicKey;
   const nftMint = listingAccount.nftMint as PublicKey;
 
-  // Get buyer's token account for the NFT
-  const buyerTokenAccount = await getAssociatedTokenAddress(nftMint, buyer);
+  // Get or create buyer's token account for the NFT (must exist before transfer)
+  const keypair = getKeypair(wallet.secretKey);
+  const buyerTokenAccountInfo = await getOrCreateAssociatedTokenAccount(
+    connection,
+    keypair,
+    nftMint,
+    buyer
+  );
+  const buyerTokenAccount = buyerTokenAccountInfo.address;
 
   // Derive escrow PDA
   const [escrowTokenAccount] = getEscrowPDA(listing);
@@ -120,7 +123,7 @@ export async function buyNft(
       escrowTokenAccount: escrowTokenAccount,
       buyerTokenAccount: buyerTokenAccount,
       tokenProgram: TOKEN_PROGRAM_ID,
-      systemProgram: PublicKey.default,
+      systemProgram: SystemProgram.programId,
     })
     .rpc();
 

@@ -7,7 +7,9 @@ import {
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
-    ActionRowBuilder
+    ActionRowBuilder,
+    MessageFlags,
+    type InteractionReplyOptions
 } from 'discord.js';
 import * as walletCommand from './commands/wallet';
 import * as listCommand from './commands/list';
@@ -89,12 +91,12 @@ client.on(Events.InteractionCreate, async interaction => {
                 if (!wallet) {
                     await interaction.reply({
                         content: 'You need a wallet first! Use `/wallet` to create one.',
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                     return;
                 }
 
-                await interaction.deferReply({ ephemeral: true });
+                await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
                 try {
                     const result = await buyNft(wallet, listingAddress);
@@ -152,18 +154,18 @@ client.on(Events.InteractionCreate, async interaction => {
                             { name: 'Balance', value: `${balance.toFixed(4)} SOL` }
                         );
 
-                    await interaction.reply({ embeds: [embed], ephemeral: true });
+                    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
                 } catch (error) {
                     await interaction.reply({
                         content: 'Invalid private key format. Please try again.',
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
             }
         }
     } catch (error) {
         console.error('Interaction error:', error);
-        const reply = { content: 'Something went wrong!', ephemeral: true };
+        const reply: InteractionReplyOptions = { content: 'Something went wrong!', flags: MessageFlags.Ephemeral };
         if (interaction.isRepliable()) {
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp(reply);

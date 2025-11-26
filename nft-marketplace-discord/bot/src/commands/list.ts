@@ -1,7 +1,8 @@
 import {
   SlashCommandBuilder,
   EmbedBuilder,
-  ChatInputCommandInteraction
+  ChatInputCommandInteraction,
+  MessageFlags
 } from 'discord.js';
 import { userWallets } from './wallet';
 import { listNft } from '../services/marketplace.service';
@@ -31,7 +32,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   if (!wallet) {
     await interaction.reply({
       content: 'You need a wallet first! Use `/wallet` to create one.',
-      ephemeral: true
+      flags: MessageFlags.Ephemeral
     });
     return;
   }

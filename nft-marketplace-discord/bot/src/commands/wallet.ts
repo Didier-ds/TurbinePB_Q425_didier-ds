@@ -4,7 +4,8 @@ import {
   ChatInputCommandInteraction,
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle
+  ButtonStyle,
+  MessageFlags
 } from 'discord.js';
 import { createWallet, getBalance } from '../services/solana.service';
 
@@ -40,10 +41,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
           .setStyle(ButtonStyle.Secondary)
       );
 
-    await interaction.reply({ embeds: [embed], components: [buttons], ephemeral: true });
+    await interaction.reply({ embeds: [embed], components: [buttons], flags: MessageFlags.Ephemeral });
   } else {
-    // Has wallet - show balance
-    await interaction.deferReply();
+    // Has wallet - show balance privately
+    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
     const balance = await getBalance(wallet.publicKey);
 
